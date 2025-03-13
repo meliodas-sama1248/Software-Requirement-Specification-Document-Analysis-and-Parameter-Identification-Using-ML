@@ -1,3 +1,83 @@
-# Software-Requirement-Specification-Document-Analysis-and-Parameter-Identification-Using-ML
+# 📄 Software Requirement Specification Document Analysis and Parameter Identification Using Machine Learning
 
-The objective of this study is to improve software development efficiency and correctness by automating the analysis of Software Requirement Specification (SRS) documents using machine learning techniques. Manually analyzing SRS documents is often time-consuming and prone to errors, making automation a valuable solution. A sample dataset consisting of 94 records was created. Each record included a sentence having a requirement, paired with a corresponding parameter such as Availability, Pricing Models, and others. The dataset was pre-processed by removing missing values, and the parameters were encoded using a Label Encoder. An 80:20 split was applied and divided data into two terms, which are training and testing sets. A machine learning pipeline was developed, utilizing a TF-IDF vectorizer to convert text data into numerical form and a Support Vector Machine (SVM) classifier for sentence classification. The dataset was used to train model, and performance metrics like accuracy, precision, recall, and F1-score were used to assess its performance. To evaluate model's categorization performance, a confusion matrix was created. The trained model and the label encoder were saved as .pkl files using joblib for future use, making the system easily reusable. For more functionality, PDF text extraction was incorporated using the PyMuPDF library. These sentences are classified into predefined parameters using the trained model. Furthermore, a chatbot was integrated using Flask and Lang chain to assist users with clarifications related to the classification results. Overall, this research successfully demonstrates how machine learning can be applied to automate SRS document analysis, reducing manual effort, improving accuracy, and offering a practical tool for software developers in real-world scenarios.
+This project aims to enhance software development efficiency and reduce manual errors by automating the analysis of Software Requirement Specification (SRS) documents using machine learning techniques.
+
+---
+
+## 🎯 Project Objective
+
+Manual analysis of SRS documents is time-consuming and error-prone. This study introduces a machine learning-based solution to automatically classify requirement sentences from SRS documents into predefined parameters such as *Availability, **Pricing Models*, and more.
+
+---
+
+## 🗂 Dataset Overview
+
+- *Total Records:* 94  
+- *Data Format:* Sentence (Requirement) + Corresponding Parameter  
+- *Preprocessing:*
+  - Removed missing values
+  - Label Encoding for target parameters
+  - Train-test split (80:20)
+
+---
+
+## ⚙ Machine Learning Pipeline
+
+- *Text Vectorization:* TF-IDF (Term Frequency - Inverse Document Frequency)
+- *Classifier:* Support Vector Machine (SVM)
+- *Performance Evaluation:*
+  - Accuracy
+  - Precision
+  - Recall
+  - F1-Score
+  - Confusion Matrix
+
+The trained model and label encoder were saved using joblib for easy reusability.
+
+---
+
+## 📥 PDF Text Extraction
+
+- Implemented PDF parsing using *PyMuPDF (fitz)* to extract text directly from uploaded SRS documents.
+- Sentences are then classified into corresponding parameters using the trained ML model.
+
+---
+
+## 🤖 Chatbot Integration
+
+To enhance user interaction and assistance:
+- A *Flask-based chatbot* was integrated.
+- Used *LangChain* for response generation and clarification support on the extracted and classified parameters.
+
+---
+
+## 💻 Tech Stack
+
+- Python (scikit-learn, pandas, numpy)
+- Flask (Web Framework)
+- PyMuPDF (PDF Text Extraction)
+- TF-IDF Vectorizer
+- SVM Classifier
+- LangChain (Conversational AI)
+- HTML/CSS (Frontend Interface)
+
+---
+
+## 📊 Output
+Real-time classification of requirements from uploaded PDFs
+Chatbot-based explanation of classified parameters
+Model performance summary (accuracy, confusion matrix, etc.)
+
+---
+## 📌 Conclusion
+This project demonstrates a powerful approach to automate SRS document analysis using machine learning. It reduces manual work, increases accuracy, and helps developers gain quicker insights into requirement parameters, making the software development process more efficient and intelligent.
+
+---
+
+## 🙌 Acknowledgements
+Python & Open-source Community
+scikit-learn, PyMuPDF, LangChain, Flask
+
+---
+
+🔗 Let’s Automate the Boring Stuff — One Requirement at a Time!
