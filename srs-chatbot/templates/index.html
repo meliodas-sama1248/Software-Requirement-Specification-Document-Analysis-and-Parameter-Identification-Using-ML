@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRS Analyzer</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            position: relative;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .chat-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle {
+            cursor: pointer;
+            padding: 6px 12px;
+            background: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .background-slider {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .background-slider input {
+            width: 80px;
+        }
+
+        .chat-history {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-bottom: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+            transition: background-color 0.3s ease;
+        }
+
+        .bot {
+            background-color: #e9ecef;
+            align-self: flex-start;
+        }
+
+        .user {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+
+        .input-text {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            resize: none;
+            max-width: 100%;
+        }
+
+        .submit-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode .chat-container {
+            background-color: #333;
+            color: #ddd;
+        }
+
+        .dark-mode .chat-history {
+            background: #444;
+        }
+
+        .dark-mode .message.bot {
+            background-color: #555;
+        }
+
+        .dark-mode .message.user {
+            background-color: #0056b3;
+        }
+
+        .dark-mode .input-container {
+            background-color: #444;
+        }
+
+        .dark-mode .input-text {
+            border: 1px solid #666;
+            color: #ddd;
+            background-color: #555;
+        }
+
+        .dark-mode .submit-button {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>SRS Bot</h1>
+            <div class="chat-controls">
+                <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+                <div class="background-slider">
+                    <label for="background-slider">Background:</label>
+                    <input type="range" id="background-slider" min="1" max="3" step="1" value="1" onchange="changeBackgroundColor()">
+                </div>
+            </div>
+        </div>
+        <div id="chat-history" class="chat-history">
+            <!-- Messages will be dynamically inserted here -->
+            {% for entry in history %}
+                <div class="message {{ entry.sender }}">{{ entry.message }}</div>
+            {% endfor %}
+        </div>
+        <div class="input-container">
+            <textarea id="input-text" class="input-text" placeholder="Type your query here..."></textarea>
+            <button onclick="submitQuery()" class="submit-button">Send</button>
+        </div>
+    </div>
+    <script src="/static/js/script.js"></script>
+    <script>
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Change background color based on slider
+        function changeBackgroundColor() {
+            const slider = document.getElementById('background-slider');
+            const value = slider.value;
+            // Placeholder background colors
+            const backgroundColors = ['#f0f2f5', '#d9e2e8', '#cbd2d9'];
+            document.body.style.backgroundColor = backgroundColors[value - 1];
+        }
+
+        // Submit the query
+        function submitQuery() {
+            const inputText = document.getElementById('input-text');
+            const query = inputText.value.trim();
+            if (query === '') return;
+
+            // Append user message
+            appendMessage('user', query);
+            inputText.value = '';
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ query: query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append bot response
+                appendMessage('bot', data.response);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Append message to chat history
+        function appendMessage(sender, message) {
+            const chatHistory = document.getElementById('chat-history');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = message;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Handle Enter key press in textarea
+        document.getElementById('input-text').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitQuery();
+            }
+        });
+
+        // Initial background color setup
+        changeBackgroundColor();
+    </script>
+</body>
+</html>
