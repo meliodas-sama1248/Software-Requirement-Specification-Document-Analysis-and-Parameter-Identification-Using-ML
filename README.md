@@ -81,3 +81,9 @@ scikit-learn, PyMuPDF, LangChain, Flask
 ---
 
 🔗 Let’s Automate the Boring Stuff — One Requirement at a Time!
+
+
+## 📜 License
+This project is licensed under the [MIT License](./LICENSE).
+
+----
